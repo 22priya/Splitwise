@@ -1,9 +1,12 @@
 package com.lld.splitwise.expense;
 
 import com.lld.splitwise.person.Person;
+import com.lld.splitwise.split.Split;
+import com.lld.splitwise.splitStrategy.SplitStrategy;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Expense {
@@ -16,9 +19,19 @@ public class Expense {
 
     private Double amount;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "paidPersonId")
     private Person paidByPerson;
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "expense")
+    private List<Split> splits;
+
+    @ManyToMany(mappedBy = "sharedExpenses")
+    private List<Person> persons;
+
+
+    @Transient
+    private SplitStrategy splitStrategy;
 
     private Date date;
     public String getName() {
@@ -59,5 +72,33 @@ public class Expense {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Person getPaidByPerson() {
+        return paidByPerson;
+    }
+
+    public void setPaidByPerson(Person paidByPerson) {
+        this.paidByPerson = paidByPerson;
+    }
+
+    public List<Split> getSplits() {
+        return splits;
+    }
+
+    public void setSplits() {
+        this.splits = this.splitStrategy.getSplits(this);
+    }
+
+    public List<Person> getPersons() {
+        return persons;
+    }
+
+    public void setPersons(List<Person> persons) {
+        this.persons = persons;
+    }
+
+    public void setSplitStrategy(SplitStrategy splitStrategy) {
+        this.splitStrategy = splitStrategy;
     }
 }

@@ -1,5 +1,6 @@
 package com.lld.splitwise;
 
+import com.lld.splitwise.expense.Expense;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
