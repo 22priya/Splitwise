@@ -3,6 +3,9 @@ package com.lld.splitwise.expenseGroup;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.lld.splitwise.person.Person;
 
 import java.util.Date;
@@ -22,7 +25,6 @@ public class ExpenseGroup {
     private Boolean active;
 
     @ManyToMany(mappedBy = "groups")
-    @JsonBackReference
     private List<Person> members;
 
     public Long getId() {
@@ -57,6 +59,7 @@ public class ExpenseGroup {
         this.active = active;
     }
 
+    @JsonIgnore
     public List<Person> getMembers() {
         return members;
     }

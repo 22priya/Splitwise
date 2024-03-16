@@ -22,7 +22,7 @@ public class ExpenseGroupController {
         return this.expenseGroupService.addGroup(group);
     }
 
-    @PatchMapping(path="/{groupId}/{personId}")
+    @PatchMapping(path="addMember/{groupId}/{personId}")
     public ResponseEntity addMemberToGroup(@PathVariable Long groupId, @PathVariable Long personId ){
         try
         {
@@ -31,7 +31,20 @@ public class ExpenseGroupController {
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PatchMapping(path="removeMember/{groupId}/{personId}")
+    public ResponseEntity removeMemberFromGroup(@PathVariable Long groupId, @PathVariable Long personId ){
+        try
+        {
+            this.expenseGroupService.removeMemberFromGroup(groupId,personId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -41,7 +54,7 @@ public class ExpenseGroupController {
     }
 
     @GetMapping(path="/{id}")
-    public List<ExpenseGroup> getAllGroupsByPersonId(@PathVariable Long id){
+    public List<ExpenseGroup> getAllGroupsByPersonId(@PathVariable Long id) throws Exception {
         return this.expenseGroupService.getAllGroupsByPerson(id);
     }
 }

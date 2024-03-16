@@ -1,7 +1,10 @@
 package com.lld.splitwise.person;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.lld.splitwise.expense.Expense;
 import com.lld.splitwise.expenseGroup.ExpenseGroup;
 import com.lld.splitwise.split.Split;
@@ -9,6 +12,7 @@ import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Person {
@@ -31,7 +35,6 @@ public class Person {
     @JoinTable(name="personGroupConjunction",
     joinColumns = @JoinColumn(name = "personId",referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name="expenseGroupId",referencedColumnName = "id"))
-    @JsonManagedReference
     private List<ExpenseGroup> groups;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "person")
@@ -69,6 +72,7 @@ public class Person {
         this.paidExpenses = paidExpenses;
     }
 
+    @JsonIgnore
     public List<ExpenseGroup> getGroups() {
         return groups;
     }
@@ -91,5 +95,18 @@ public class Person {
 
     public void setSharedExpenses(List<Expense> sharedExpenses) {
         this.sharedExpenses = sharedExpenses;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(id, person.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

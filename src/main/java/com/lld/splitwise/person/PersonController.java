@@ -24,9 +24,7 @@ public class PersonController {
     }
 
     @GetMapping(path = "/{groupId}")
-    public List<Person> getAllMembersOfGroup(@PathVariable Long groupId)
-    {
-        List<Person> p=this.personService.getAllPersonsByGroup(groupId);
-        return p;
+    public List<Person> getAllMembersOfGroup(@PathVariable Long groupId) throws Exception {
+        return this.personService.getAllPersonsByGroup(groupId);
     }
 }

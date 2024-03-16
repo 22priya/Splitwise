@@ -1,5 +1,6 @@
 package com.lld.splitwise.person;
 
+import com.lld.splitwise.expenseGroup.ExpenseGroup;
 import com.lld.splitwise.expenseGroup.ExpenseGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,8 +33,11 @@ public class PersonService {
         return this.personRepository.save(person);
     }
 
-    public List<Person> getAllPersonsByGroup(Long id){
-        List<Person> p=this.groupRepository.findById(id).get().getMembers();
-        return p;
+    public List<Person> getAllPersonsByGroup(Long id) throws Exception {
+        Optional<ExpenseGroup> group=this.groupRepository.findById(id);
+        if(group.isEmpty())
+            throw new Exception("There is no group with id: "+id);
+        else
+            return group.get().getMembers();
     }
 }
