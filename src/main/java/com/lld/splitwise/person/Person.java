@@ -1,14 +1,9 @@
 package com.lld.splitwise.person;
 
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.lld.splitwise.expense.Expense;
 import com.lld.splitwise.expenseGroup.ExpenseGroup;
 import com.lld.splitwise.split.Split;
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
 import javax.persistence.*;
 import java.util.List;
@@ -24,12 +19,6 @@ public class Person {
 
     @OneToMany(mappedBy = "paidByPerson",cascade = CascadeType.ALL)
     private List<Expense> paidExpenses;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name="personExpenseConjunction",
-    joinColumns = @JoinColumn(name="personId",referencedColumnName = "id"),
-    inverseJoinColumns  =@JoinColumn(name="expenseId",referencedColumnName = "id"))
-    private List<Expense> sharedExpenses;
 
     @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(name="personGroupConjunction",
@@ -64,6 +53,7 @@ public class Person {
         this.email = email;
     }
 
+    @JsonIgnore
     public List<Expense> getPaidExpenses() {
         return paidExpenses;
     }
@@ -81,20 +71,13 @@ public class Person {
         this.groups = groups;
     }
 
+    @JsonIgnore
     public List<Split> getSplits() {
         return splits;
     }
 
     public void setSplits(List<Split> splits) {
         this.splits = splits;
-    }
-
-    public List<Expense> getSharedExpenses() {
-        return sharedExpenses;
-    }
-
-    public void setSharedExpenses(List<Expense> sharedExpenses) {
-        this.sharedExpenses = sharedExpenses;
     }
 
     @Override

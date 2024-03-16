@@ -1,5 +1,6 @@
 package com.lld.splitwise.expense;
 
+import com.lld.splitwise.expenseGroup.ExpenseGroup;
 import com.lld.splitwise.person.Person;
 import com.lld.splitwise.split.Split;
 import com.lld.splitwise.splitStrategy.SplitStrategy;
@@ -26,9 +27,9 @@ public class Expense {
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "expense")
     private List<Split> splits;
 
-    @ManyToMany(mappedBy = "sharedExpenses")
-    private List<Person> persons;
-
+    @ManyToOne
+    @JoinColumn(name="groupId")
+    private ExpenseGroup expenseGroup;
 
     @Transient
     private SplitStrategy splitStrategy;
@@ -58,14 +59,6 @@ public class Expense {
         this.amount = amount;
     }
 
-    public Person getPaidByUser() {
-        return paidByPerson;
-    }
-
-    public void setPaidByUser(Person paidByPerson) {
-        this.paidByPerson = paidByPerson;
-    }
-
     public Date getDate() {
         return date;
     }
@@ -87,18 +80,18 @@ public class Expense {
     }
 
     public void setSplits() {
-        this.splits = this.splitStrategy.getSplits(this);
-    }
-
-    public List<Person> getPersons() {
-        return persons;
-    }
-
-    public void setPersons(List<Person> persons) {
-        this.persons = persons;
+       this.splitStrategy.getSplits(this);
     }
 
     public void setSplitStrategy(SplitStrategy splitStrategy) {
         this.splitStrategy = splitStrategy;
+    }
+
+    public ExpenseGroup getExpenseGroup() {
+        return expenseGroup;
+    }
+
+    public void setExpenseGroup(ExpenseGroup expenseGroup) {
+        this.expenseGroup = expenseGroup;
     }
 }

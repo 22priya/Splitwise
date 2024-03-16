@@ -1,45 +1,24 @@
 package com.lld.splitwise.splitStrategy;
 
 import com.lld.splitwise.expense.Expense;
-import com.lld.splitwise.person.Person;
-import com.lld.splitwise.split.Split;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+@Component
 public class ExactPercentSplitStrategy implements SplitStrategy{
-    private Map<Person,Double> shares;
 
-    public ExactPercentSplitStrategy(Map<Person, Double> shares) {
-        this.shares = shares;
+    @Override
+    public void getSplits(Expense expense) {
+        expense.getSplits().stream().forEach(it->{
+            it.setAmount(it.getAmount()*expense.getAmount()*0.01);
+            it.setExpense(expense);
+        });
     }
 
     @Override
-    public List<Split> getSplits(Expense expense) {
-        List<Split> splits=new ArrayList<>();
-        List<Person> persons=expense.getPersons();
-
-        if(shares.size()< persons.size())
-            throw new IllegalArgumentException("Please provide split percent of all persons");
-        else if(shares.size()>persons.size())
-            throw new IllegalArgumentException("You are providing split percent for more person");
-        else if(!this.sumOfShares().equals(100.00))
-            throw new IllegalArgumentException("The sum of all percents is not equal to 100");
-        else {
-            for(Person p: expense.getPersons())
-            {
-                Split split=new Split();
-                split.setAmount(shares.get(p)*expense.getAmount()*0.01);
-                split.setPerson(p);
-                split.setExpense(expense);
-                splits.add(split);
-            }
-            return splits;
-        }
+    public boolean isValidSplitAmount(Expense expense) {
+        Double sumOfIndividualPercents=
+                expense.getSplits().stream().mapToDouble(it->it.getAmount()).reduce(0,(i,j)->i+j);
+        return sumOfIndividualPercents.equals(100.0);
     }
 
-    private Double sumOfShares(){
-        return shares.values().stream().reduce(0.0,(i,j)->i+j);
-    }
 }

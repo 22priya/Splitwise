@@ -1,6 +1,6 @@
 package com.lld.splitwise.split;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lld.splitwise.expense.Expense;
 import com.lld.splitwise.person.Person;
 
@@ -18,11 +18,9 @@ public class Split {
     @JoinColumn(name = "expenseId")
     private Expense expense;
 
-
     @ManyToOne
     @JoinColumn(name="personId")
     private Person person;
-
 
     public Integer getId() {
         return id;
@@ -40,6 +38,7 @@ public class Split {
         this.amount = amount;
     }
 
+    @JsonIgnore
     public Expense getExpense() {
         return expense;
     }

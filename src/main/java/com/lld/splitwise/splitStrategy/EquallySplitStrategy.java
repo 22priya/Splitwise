@@ -1,25 +1,21 @@
 package com.lld.splitwise.splitStrategy;
 
 import com.lld.splitwise.expense.Expense;
-import com.lld.splitwise.person.Person;
-import com.lld.splitwise.split.Split;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@Component
 public class EquallySplitStrategy implements SplitStrategy{
     @Override
-    public List<Split> getSplits(Expense expense) {
-        Double share=expense.getAmount() / expense.getPersons().size();
-        List<Split> splits=new ArrayList<>();
-        for(Person p: expense.getPersons())
-        {
-            Split split=new Split();
-            split.setAmount(share);
-            split.setPerson(p);
-            split.setExpense(expense);
-            splits.add(split);
-        }
-        return splits;
+    public void getSplits(Expense expense) {
+        Double share=expense.getAmount() / expense.getSplits().size();
+        expense.getSplits().stream().forEach(it->{
+            it.setAmount(share);
+            it.setExpense(expense);
+        });
+    }
+
+    @Override
+    public boolean isValidSplitAmount(Expense expense) {
+        return true;
     }
 }

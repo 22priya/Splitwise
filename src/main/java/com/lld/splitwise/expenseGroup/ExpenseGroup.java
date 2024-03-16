@@ -2,10 +2,8 @@ package com.lld.splitwise.expenseGroup;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.lld.splitwise.expense.Expense;
 import com.lld.splitwise.person.Person;
 
 import java.util.Date;
@@ -23,6 +21,9 @@ public class ExpenseGroup {
     private Date createdDate;
 
     private Boolean active;
+
+    @OneToMany(mappedBy = "expenseGroup",cascade = CascadeType.ALL)
+    private List<Expense> expenses;
 
     @ManyToMany(mappedBy = "groups")
     private List<Person> members;
