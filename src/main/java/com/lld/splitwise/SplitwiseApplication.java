@@ -3,12 +3,12 @@ package com.lld.splitwise;
 import com.lld.splitwise.expense.Expense;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class SplitwiseApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(SplitwiseApplication.class, args);
-	}
-
-}
+//
+//@SpringBootApplication
+//public class SplitwiseApplication {
+//
+//	public static void main(String[] args) {
+//		SpringApplication.run(SplitwiseApplication.class, args);
+//	}
+//
+//}

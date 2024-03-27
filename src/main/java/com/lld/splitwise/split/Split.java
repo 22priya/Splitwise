@@ -54,4 +54,14 @@ public class Split {
     public void setPerson(Person person) {
         this.person = person;
     }
+
+    @Override
+    public String toString() {
+        return "Split{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", expense=" + expense +
+                ", person=" + person +
+                '}';
+    }
 }

@@ -4,6 +4,7 @@ import com.lld.splitwise.expenseGroup.ExpenseGroup;
 import com.lld.splitwise.person.Person;
 import com.lld.splitwise.split.Split;
 import com.lld.splitwise.splitStrategy.SplitStrategy;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,8 +21,9 @@ public class Expense {
 
     private Double amount;
 
-    @ManyToOne
+    @ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DETACH,  CascadeType.REFRESH})
     @JoinColumn(name = "paidPersonId")
+    //In a @ManyToOne bi direction relationship , "MANY" side is owning side
     private Person paidByPerson;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "expense")
@@ -81,6 +83,11 @@ public class Expense {
 
     public void setSplits() {
        this.splitStrategy.getSplits(this);
+    }
+
+    public void setSplits(List<Split> splits) {
+        this.splits=splits;
+        this.splits=splits;
     }
 
     public void setSplitStrategy(SplitStrategy splitStrategy) {

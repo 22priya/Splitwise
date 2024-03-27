@@ -14,6 +14,7 @@ public class ExpenseGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true)
     private Long id;
 
     private String name;
@@ -21,6 +22,15 @@ public class ExpenseGroup {
     private Date createdDate;
 
     private Boolean active;
+
+    @JsonIgnore
+    public List<Expense> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(List<Expense> expenses) {
+        this.expenses = expenses;
+    }
 
     @OneToMany(mappedBy = "expenseGroup",cascade = CascadeType.ALL)
     private List<Expense> expenses;

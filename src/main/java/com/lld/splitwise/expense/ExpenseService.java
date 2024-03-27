@@ -29,14 +29,6 @@ public class ExpenseService {
     @Autowired
     private ExactPercentSplitStrategy exactPercentSplitStrategy;
 
-    public List<Expense> getAllExpensesPaidByPerson(Long personId) throws Exception {
-        Optional<Person> person=this.personRepository.findById(personId);
-        if(person.isEmpty())
-            throw new Exception("There is no person with id: "+personId);
-        else
-            return person.get().getPaidExpenses();
-    }
-
     public List<Expense> getAllExpensesSharedByPerson(Long personId) throws Exception{
         Optional<Person> person=this.personRepository.findById(personId);
         if(person.isEmpty())
@@ -52,6 +44,11 @@ public class ExpenseService {
             throw new Exception("There is no person with id: "+paidPersonId);
         else if(group.isEmpty())
             throw new Exception("There is no group with id: "+groupId);
+        expense.setDate(new Date());
+        expense.setPaidByPerson(person.get());
+        expense.setExpenseGroup(group.get());
+        if(!areValidSplitUsers(expense))
+            throw new Exception("The expense is being shared by a user who is not added in groupId: "+groupId);
         List<Person> sharedPersons=new ArrayList<>();
         for(Split split :expense.getSplits())
         {
@@ -59,9 +56,7 @@ public class ExpenseService {
             split.setPerson(p.get());
             sharedPersons.add(p.get());
         }
-        expense.setDate(new Date());
-        expense.setPaidByPerson(person.get());
-        expense.setExpenseGroup(group.get());
+
         SplitStrategy strategy=this.setSplitStrategy(splitStrategy);
         expense.setSplitStrategy(strategy);
         if(!strategy.isValidSplitAmount(expense))
@@ -98,4 +93,38 @@ public class ExpenseService {
                                 .sum();
         return expense.getAmount().equals(sumOfSplits);
     }
+
+    private boolean areValidSplitUsers(Expense expense)
+    {
+        List<Split> splits=expense.getSplits();
+        Optional<ExpenseGroup> group=this.expenseGroupRepository.findById(expense.getExpenseGroup().getId());
+        List<Person> groupPersons=group.get().getMembers();
+        List<Person> splitPersons=splits.stream().map(it->it.getPerson()).toList();
+        return groupPersons.containsAll(splitPersons);
+    }
+
+    public List<Expense> getAllExpensesByGroup(Long groupId) throws Exception {
+        Optional<ExpenseGroup> group=this.expenseGroupRepository.findById(groupId);
+        if(group.isEmpty())
+            throw new Exception("No group exist with id: "+groupId);
+        else
+            return group.get().getExpenses();
+    }
+
+    public List<Expense> getAllExpensesPaidByPerson(Long personId) throws Exception {
+        Optional<Person> person=this.personRepository.findById(personId);
+        if(person.isEmpty())
+            throw new Exception("No person exist with id: "+personId);
+        else
+            return person.get().getPaidExpenses();
+    }
+
+    public List<Expense> getAllSharedExpensesByPerson(Long personId) throws Exception{
+        Optional<Person> person=this.personRepository.findById(personId);
+        if(person.isEmpty())
+            throw new Exception("No person exist with id: "+personId);
+        else
+            return person.get().getSplits().stream().map(it->it.getExpense()).collect(Collectors.toList());
+    }
+
 }

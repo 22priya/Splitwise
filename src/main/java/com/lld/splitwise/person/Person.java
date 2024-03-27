@@ -17,10 +17,11 @@ public class Person {
     private String name;
     private String email;
 
-    @OneToMany(mappedBy = "paidByPerson",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "paidByPerson", cascade = CascadeType.ALL)
+    //@JoinColumn annotation shows that this is owning side of relationship
     private List<Expense> paidExpenses;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name="personGroupConjunction",
     joinColumns = @JoinColumn(name = "personId",referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name="expenseGroupId",referencedColumnName = "id"))
