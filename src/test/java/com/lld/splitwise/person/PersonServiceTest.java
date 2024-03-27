@@ -10,13 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.aspectj.bridge.MessageUtil.fail;
+import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
@@ -114,6 +111,21 @@ public class PersonServiceTest {
                 ()->assertEquals(80,personService.getAmountPerson1LentToPerson2(p1,p3)),
                 ()->assertEquals(166.66,personService.getAmountPerson1LentToPerson2(p2,p3),0.01)
         );
+    }
+
+    @Test
+    public void getAllAmountsThatOtherPersonsLentCurrentPersonWhenPersonNotExistsTest() {
+        when(personRepository.findById(p3.getId())).thenReturn(null);
+        assertThrows( Exception.class,()->personService.getAllAmountsThatOtherPersonsLentCurrentPerson(p3.getId()));
+    }
+
+    @Test
+    public void getAllAmountsThatOtherPersonsLentCurrentPersonWhenPersonExistsTest() throws Exception {
+        when(personRepository.findById(p3.getId())).thenReturn(Optional.of(p3));
+        when(personRepository.findAll()).thenReturn(List.of(p1,p2,p3));
+        Map<Person,Double> map=personService.getAllAmountsThatOtherPersonsLentCurrentPerson(p3.getId());
+        assertEquals(80,map.get(p1));
+        assertEquals(166.66,map.get(p2),0.01);
     }
 
 }

@@ -68,11 +68,6 @@ public class PersonService {
     public Double getAmountPerson1LentToPerson2(Person person1,Person person2) throws Exception {
         //if returned value is positive -> person1 lent to person2
         //if return value is negative -> person2 lent to person1
-        //Optional<Person> person1=personRepository.findById(person1Id);
-        //Optional<Person> person2=personRepository.findById(person2Id);
-
-//        if(person2.isEmpty() || person1.isEmpty())
-//            throw new Exception("You have given personId which does not exist in system");
 
         List<Expense> expensesPaidByPerson1=person1.getPaidExpenses();
         List<Expense> expensesPaidByPerson2=person2.getPaidExpenses();
